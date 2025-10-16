@@ -8,8 +8,8 @@ void setup() {
   RefLineValue(300);        // ค่าในการจับเส้น เซนเซอร์หน้า หลัง
   RefCenterLineValue(300);  // ค่าในการจับเส้น เซนเซอร์คู่กลาง
 
-  SetToCenterSpeed(30);      // ความเร็วเข้ากลางหุ่น
-  SetTurnSpeed(40);          // ความเร็วเลี้ยวเข้าแยก
+  SetToCenterSpeed(40);      // ความเร็วเข้ากลางหุ่น
+  SetTurnSpeed(20);          // ความเร็วเลี้ยวเข้าแยก
   SetRobotPID(0.014, 0.04);  // ค่า PID
 
   TurnSpeedLeft(25, 80, 50);
@@ -53,4 +53,38 @@ void loop() {
     MotorStop();
     delay(100);
   }
+}
+void wavesmall() {
+  FFR(60,'p');
+  go(0.32,30);
+}
+
+void zigzag(char direction) {
+  if (direction == 'R') {
+  FFR(35, 'l');
+  FFL(70, 'R');
+  FFR(50, 'L');
+  } else if (direction == 'L') {
+  FFL(35, 'r');
+  FFR(70, 'L');
+  FFL(50, 'R');
+  } else {
+    // do nothing 
+  }
+}
+
+void go(double meters, double speed) {
+  FFtimer(speed, meters * 70000 / (speed));
+}
+
+void pickup() {
+  ServoOpen();
+  delay(100);
+  ServoDown();
+  delay(200);
+  go(0.05,10);
+  ServoClose();
+  delay(100);
+  ServoUp();
+  delay(100);
 }
