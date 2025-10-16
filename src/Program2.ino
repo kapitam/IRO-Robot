@@ -1,21 +1,15 @@
 void Program2() {
-    // Move(30,0,500);
-  // Move(0,30,500);
-  // MotorStop();
-  FFL(40, 'L');
-  FFtimer(40, 1000);
-  BBL(40, 'L');
-  FFWhite(40, 's');
+  FFR(55, 'R');
+  FFR(45, 'r');
+  FFL(55, 'L');
+  FFL(30, 'R');
+  FFL(20, 'l');
+  go(20, 0.15);
+  pickup();
   SpinL();
-  FFL(40, 'L');
-  FFtimer(40, 1000);
-  BBL(40, 'L');
-  FFWhite(40, 's');
-  SpinL();
-  FFL(40, 'L');
-  FFtimer(40, 1000);
-  BBL(40, 'L');
-  FFWhite(40, 's');
-  SpinL();
+  FFR(55, 'r');
+  FFR(55, 'r');
+
+
 }
 

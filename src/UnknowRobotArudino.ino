@@ -9,7 +9,7 @@ void setup() {
   RefCenterLineValue(300);  // ค่าในการจับเส้น เซนเซอร์คู่กลาง
 
   SetToCenterSpeed(40);      // ความเร็วเข้ากลางหุ่น
-  SetTurnSpeed(20);          // ความเร็วเลี้ยวเข้าแยก
+  SetTurnSpeed(35);          // ความเร็วเลี้ยวเข้าแยก
   SetRobotPID(0.014, 0.04);  // ค่า PID
 
   TurnSpeedLeft(25, 80, 50);
@@ -18,10 +18,10 @@ void setup() {
   BalanceMotorLeft = 0;
   BalanceMotorRight = 0;
 
-  setOpen(70, 110);
-  setClose(120, 65);
-  setCloseSmall(150, 35);
-  setUpDowm(180, 90, 100);
+  setOpen(125, 55);
+  setClose(140, 45);
+  setCloseSmall(73, 107); // left side less is close right side more is close
+  setUpDowm(180, 130, 95);
 
   ////////////////////////////////////////////////////////////////////
   //////////////////////////////เช็คค่าเซนเซอร์//////////////////////////
@@ -35,17 +35,16 @@ void setup() {
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////
 
-  // ServoDown();
-  ServoCloseSmall();
-  ServoUp();
-  // ServoOpen();
-
+  ServoOpen();
   OK();
-  delay(500);
 
-  Program1();
-  // Program2();
-  // Program3();
+//Calibration
+//spin('R',180);
+//OK();
+
+//Program2();
+//delay(700);
+  Program3();
 }
 
 void loop() {
@@ -54,37 +53,147 @@ void loop() {
     delay(100);
   }
 }
+//for small wave
 void wavesmall() {
-  FFR(60,'p');
-  go(0.32,30);
+  FF(60,'p');
+  go(30,0.32);
 }
 
-void zigzag(char direction) {
+//for big wave, char is first turn
+void wavebig(char direction) {
   if (direction == 'R') {
-  FFR(35, 'l');
-  FFL(70, 'R');
-  FFR(50, 'L');
+  FFL(60, 'l');
+  FFR(60, 'R');
+  FFL(60, 'l');
   } else if (direction == 'L') {
-  FFL(35, 'r');
-  FFR(70, 'L');
-  FFL(50, 'R');
+  FFR(60, 'r');
+  FFL(60, 'L');
+  FFR(60, 'r');
   } else {
     // do nothing 
   }
 }
 
-void go(double meters, double speed) {
-  FFtimer(speed, meters * 70000 / (speed));
+//for zigzag, char is first turn
+void zigzag(char direction) {
+  if (direction == 'R') {
+  FFL(60, 'L');
+  FFR(50, 'R');
+  } else if (direction == 'L') {
+  FFR(60, 'R');
+  FFL(50, 'L');
+  } else {
+    // do nothing 
+  }
 }
 
+// move on line for certain meters at certain speed, 60 for default
+void go(double speed, double meters) {
+  if (meters > 0) {
+    FFtimer(speed, meters * 65600 / (speed));
+  }
+  else if (meters < 0) {
+    BBtimer(speed, -meters * 65600 / (speed));
+  }
+  MotorStop();
+}
+
+// pick up object
 void pickup() {
+  movement(-0.12);
   ServoOpen();
   delay(100);
   ServoDown();
   delay(200);
-  go(0.05,10);
+  movement(0.06);
+  ServoCloseSmall();
+  delay(100);
+  ServoUp();
+  delay(100);
+}
+
+// release outer object
+void releasefirst() {
+  ServoDown();
+  delay(200);
+  ServoOpen();
+  delay(100);
+  movement(-0.03);
+  ServoCloseSmall();
+  delay(100);
+  ServoUp();
+  delay(100);
+}
+
+void release() {
+  ServoDown();
+  delay(200);
+  ServoOpen();
+  delay(100);
+  movement(-0.08);
   ServoClose();
   delay(100);
   ServoUp();
   delay(100);
 }
+
+void pickupfirst() {
+  ServoDown();
+  delay(100);
+  ServoOpen();
+  movement(0.09);
+  ServoCloseSmall();
+  delay(100);
+  ServoUp();
+  delay(100);
+}
+
+// move forward/backward outside line for certain meters
+void movement (double distance) {
+  if (distance < 0) {
+    Move(-15*k, -15*k, -distance * 6870);
+    MotorStop();
+    return;
+  }
+  Move(15*k, 15*k, distance * 6870);
+  MotorStop();
+}
+
+//spin direction, degrees
+void spin(char direction, double angle) {
+  if (direction == 'R') {
+  Move(30*k*21/20, -30*k*21/20, angle * 2.665);
+  MotorStop();
+  } else if (direction == 'L') {
+  Move(-30*k*21/20, 30*k*21/20, angle * 2.665);
+  MotorStop();
+  } else {
+    // do nothing 
+  }
+  MotorStop();
+}
+
+void S(char direction) {
+  if (direction == 'L') {
+  FFR(50, 'r');
+  FFL(50, 'l');
+  } else if (direction == 'R') {
+  FFL(50, 'l'); 
+  FFR(50, 'r');
+  } else {
+    // do nothing 
+  }
+}
+
+void hook(char direction) {
+  if (direction == 'L') {
+  FFR(55, 'R');
+  FFL(55, 'L');
+  } else if (direction == 'R') {
+  FFL(55, 'L'); 
+  FFR(55, 'R');
+  } else {
+    // do nothing 
+  }
+}
+

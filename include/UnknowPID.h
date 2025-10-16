@@ -4,6 +4,7 @@
 
 int LastError_F, LastError_B;
 int Error_F = 0, Error_B = 0;
+double k = 0.895*20/21*1.025;//original stop at 1.025
 
 int readPositionF(int Track, int noise) {
   unsigned char i, online = 0;
@@ -62,6 +63,7 @@ int readPositionB(int Track, int noise) {
 }
 
 void PIDF(int Speed, float Kp, float Kd) {
+  Speed *= k;
   int Pos = readPositionF(250, 50);
   int Error = Pos - 3500;
   int PID_Value = (Kp * Error) + (Kd * (Error - LastError_F));
@@ -76,6 +78,7 @@ void PIDF(int Speed, float Kp, float Kd) {
 }
 
 void PIDB(int Speed, float Kp, float Kd) {
+  Speed *= k;
   int Pos = readPositionB(250, 50);
   int Error = Pos - 3500;
   int PID_Value = (Kp * Error) + (Kd * (Error - LastError_B));
