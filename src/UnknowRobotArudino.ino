@@ -19,12 +19,12 @@ void setup() {
   BalanceMotorRight = 0;
 
   setOpen(125, 55);
-  setClose(140, 45);
+  setClose(30, 150);
   setCloseSmall(73, 107); // left side less is close right side more is close
-  setUpDowm(180, 130, 95);
+  setUpDowm(180, 80, 80);
 
   ////////////////////////////////////////////////////////////////////
-  //////////////////////////////เช็คค่าเซนเซอร์//////////////////////////
+  //////////////////////////////เช็คค่าเซนเซอร์/////a/////////////////////
   // SerialDistance();                // Serial Monitor เซนเซอร์วัดระยะ
   // Serial_FrontSensor();            // Serial Monitor เซนเซอร์หน้า
   // Serial_BackSensor();             // Serial Monitor เซนเซอร์หลัง
@@ -36,15 +36,72 @@ void setup() {
   ////////////////////////////////////////////////////////////////////
 
   ServoOpen();
-  OK();
+  ServoUp();
 
 //Calibration
-//spin('R',180);
-//OK();
 
-//Program2();
+//spin('R',180);
+OK();
+Program3();
+OK();
+Program1();
+OK();
+Program2();
+
+
+/*
+OK();
+  FF(30, 's');
+  movement(0.04);
+  spin('R', 90);
+  movement(0.08);
+  spin('L', 90);
+  movement(0.10);
+  release();
+  spin('R', 180);
+  movement(0.07);
+  spin('R', 90);
+  movement(0.08);
+  spin('L',90);
+  movement(0.05);
+
+  //PUSHING1
+
+*/
+
+OK();
+FF(30,'s');
+  //circle
+  delay(100);
+  movement(0.05);
+  spin('R', 45);
+  movement(0.14);
+  spin('L', 42);
+  movement(0.45);
+  spin('L', 90);
+  movement(0.23);
+  spin('L', 90);
+
+
+  release();
+  spin('R', 90);
+  movement(-0.23);
+  spin('R', 90);
+  movement(-0.45);
+  spin('R', 90);
+  movement(-0.14);
+  spin('L', 45);
+  movement(-0.05);
+  FFL(50, 'l');
+  //circle
+
+
+
+
+OK();
+Program3();
 //delay(700);
-  Program3();
+//Program3();
 }
 
 void loop() {
@@ -56,7 +113,7 @@ void loop() {
 //for small wave
 void wavesmall() {
   FF(60,'p');
-  go(30,0.32);
+  go(25,0.32);
 }
 
 //for big wave, char is first turn
@@ -100,18 +157,28 @@ void go(double speed, double meters) {
 
 // pick up object
 void pickup() {
-  movement(-0.12);
+  movement(-0.01);
   ServoOpen();
-  delay(100);
+  delay(300);
   ServoDown();
-  delay(200);
-  movement(0.06);
-  ServoCloseSmall();
-  delay(100);
+  delay(400);
+  ServoClose();
+  delay(400);
   ServoUp();
   delay(100);
 }
 
+void pick2() {
+  ServoUp45();
+  delay(200);
+  ServoOpen();
+  delay(400);
+  movement(0.1);
+  ServoClose();
+  delay(400);
+  ServoUp();
+  movement(-0.1);
+}
 // release outer object
 void releasefirst() {
   ServoDown();
@@ -119,7 +186,7 @@ void releasefirst() {
   ServoOpen();
   delay(100);
   movement(-0.03);
-  ServoCloseSmall();
+  ServoClose();
   delay(100);
   ServoUp();
   delay(100);
@@ -127,25 +194,24 @@ void releasefirst() {
 
 void release() {
   ServoDown();
-  delay(200);
+  delay(100);
   ServoOpen();
   delay(100);
-  movement(-0.08);
-  ServoClose();
-  delay(100);
   ServoUp();
+  delay(100);
+  ServoClose();
   delay(100);
 }
 
 void pickupfirst() {
   ServoDown();
-  delay(100);
+  delay(300);
   ServoOpen();
   movement(0.09);
   ServoCloseSmall();
-  delay(100);
+  delay(300);
   ServoUp();
-  delay(100);
+  delay(300);
 }
 
 // move forward/backward outside line for certain meters
@@ -153,10 +219,12 @@ void movement (double distance) {
   if (distance < 0) {
     Move(-15*k, -15*k, -distance * 6870);
     MotorStop();
+    delay(50);
     return;
   }
   Move(15*k, 15*k, distance * 6870);
   MotorStop();
+  delay(50);
 }
 
 //spin direction, degrees
@@ -164,9 +232,11 @@ void spin(char direction, double angle) {
   if (direction == 'R') {
   Move(30*k*21/20, -30*k*21/20, angle * 2.665);
   MotorStop();
+  delay(50);
   } else if (direction == 'L') {
   Move(-30*k*21/20, 30*k*21/20, angle * 2.665);
   MotorStop();
+  delay(50);
   } else {
     // do nothing 
   }

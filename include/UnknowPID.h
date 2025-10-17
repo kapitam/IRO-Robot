@@ -4,7 +4,7 @@
 
 int LastError_F, LastError_B;
 int Error_F = 0, Error_B = 0;
-double k = 0.895*20/21*1.025;//original stop at 1.025
+double k = 0.895*20/21*1.025*1.02*1.05*0.95*1.03;//original stop at 1.025
 
 int readPositionF(int Track, int noise) {
   unsigned char i, online = 0;
