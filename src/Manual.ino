@@ -157,11 +157,11 @@ void BE_(double Speed = 30) {
 }
 
 void _F(int Distance) {
-  movement(Distance * 0.01);
+  movement(Distance);
 }
 
 void _B(int Distance) {
-  movement(-Distance * 0.01);
+  movement(-Distance);
 }
 
 
@@ -198,18 +198,13 @@ void _BL(double distance = 10) {
 }
 
 void P() {
-  _B(10);
-  ServoOpen();
-  delay(100);
+  _B(3.3);
   ServoDown();
-  delay(100);
-  _F(5);
-  delay(100);
-  _F(5);
+  delay(50);
   ServoClose();
-  delay(100);
+  delay(50);
   ServoUp();
-  delay(100);
+  delay(50);
 }
 
 void R() {
@@ -219,7 +214,6 @@ void R() {
   delay(100);
   ServoUp();
   delay(100);
-  ServoClose();
 }
 
 
@@ -233,7 +227,7 @@ void movement (double distance) {
     MotorStop();
     return;
   }
-  Move(15*k, 15*k, distance * 68.7);
+  Move(15*k, 15*k, distance * 43.7);
   MotorStop();
 }
 
@@ -259,6 +253,30 @@ void go(double cm, double speed = 30) {
   }
   MotorStop();
 }
+
+void got(double distance, double speed = 40) {
+  double target = speed - 15;
+  double traveldistance = distance * 2.0 / 3.0 - 5;
+
+  // ---- Initial forward movement (fixed 5 units) ----
+  Move(15*k, 15*k, 5 * 68.7 * (15.0 / 15.0));
+
+  // ---- Acceleration phase (15 → speed) ----
+  Move((15 + target/4)*k, (15 + target/4)*k, (traveldistance/6) * 68.7 * (15.0 / (15 + target/4)));
+  Move((15 + target/2)*k, (15 + target/2)*k, (traveldistance/6) * 68.7 * (15.0 / (15 + target/2)));
+  Move((15 + 3*target/4)*k, (15 + 3*target/4)*k, (traveldistance/6) * 68.7 * (15.0 / (15 + 3*target/4)));
+
+  // ---- Max speed segment ----
+  Move(speed*k, speed*k, (traveldistance/6) * 68.7 * (15.0 / speed));
+
+  // ---- Deceleration phase (speed → 30) ----
+  double decTarget = speed - 30;
+  Move((speed - decTarget/2)*k, (speed - decTarget/2)*k, (traveldistance/6) * 68.7 * (15.0 / (speed - decTarget/2)));
+  Move(30*k, 30*k, (traveldistance/6) * 68.7 * (15.0 / 30.0));
+
+  MotorStop();
+}
+
 
 
 

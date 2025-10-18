@@ -32,6 +32,9 @@ void Move(int l, int r, int deelay) {
   delay(deelay);
 }
 
+
+
+
 void MotorStop() {
   analogWrite(EN1, 0);  
   analogWrite(EN2, 0);

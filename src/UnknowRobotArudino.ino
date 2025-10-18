@@ -12,7 +12,7 @@ float voltage() {
 
 void setup() {
   float j = voltage();
-  setk(0.895*20/21*1.0635);
+  setk(0.895*20/21*1.0635*0.93*1.04*1.03);
   RobotSetup();
   // CalibrateSensor();  // >> Calibrate Robot Senso99r <<
   LightValue_FrontSensor(57, 57, 56, 56, 53, 56, 53, 58, 665, 733, 603, 694, 550, 590, 558, 718);
@@ -34,7 +34,7 @@ void setup() {
   setOpen(105, 75);
   setClose(140, 45);
   setCloseSmall(73, 107); // left side less is close right side more is close
-  setUpDowm(180, 130, 85);
+  setUpDowm(180, 130, 104);
 
   ////////////////////////////////////////////////////////////////////
   //////////////////////////////เช็คค่าเซนเซอร์//////////////////////////
@@ -49,8 +49,8 @@ void setup() {
   ////////////////////////////////////////////////////////////////////
 
   ServoOpen();
-  ServoClose();
   ServoUp();
+
   while (1) {
     // refresh sensor values used by OK_PUSH/START_PUSH
     ReadSensorRaw();
@@ -75,10 +75,6 @@ void setup() {
 
 
 
-  Program1();
-OK() ;
-Program1();
-OK() ;
   Program1();
 
 
