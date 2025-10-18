@@ -44,3 +44,277 @@
 // >> ServoUp();     // ยกที่คีบ
 // >> ServoDown();   // วางที่คีบ
 
+/*Manual
+
+3 speeds:
+variable B: 10 (for going into blocks)
+variable C: 35 (for unsafe curves) (also when entering pushing/circle area)
+variable D: 55 (for normal movement) (also default when speed not specified)
+
+F(speed = 55); is forward, robot centered, f(); is forward, head centered
+B(speed = 55); is backward, robot centered, b(); is backward, head centered
+R(angle = 0); is turn right, stopping when see line at front, with angle is degrees to turn
+L(angle = 0); is turn left, stopping when see line at front, with angle is degrees to turn
+
+FS(speed = 30); is forward, stopping when see line at front
+BS(speed = 30); is backward, stopping when see line at back
+S(); is MotorStop();
+
+FE(speed = 30); is forward, stopping when end of the line
+BE(speed = 30); is backward, stopping when end of the line
+
+_F(distance); is forward outside line
+_B(distance); is backward outside line
+_R(angle); is turn right, 90 by default
+_L(angle); is turn left, 90 by default
+
+_FR(multiplier); is FORWARD TURNRIGHT FORWARD, use multiplier if it moves not enough, multiplier 1 is 10cm per direction
+_FL(multiplier); is FORWARD TURNLEFT FORWARD, use multiplier if it moves not enough, multiplier 1 is 10cm per direction
+_BR(multiplier); is BACKWARD TURNRIGHT BACKWARD, use multiplier if it moves not enough, multiplier 1 is 10cm per direction
+_BL(multiplier); is BACKWARD TURNLEFT BACKWARD, use multiplier if it moves not enough, multiplier 1 is 10cm per direction
+
+P(); is pick up object
+R(); is release object
+
+LS(); is left S
+RS(); is right S
+LH(); is left Hook
+RH(); is right Hook
+*/
+
+void F_(double speed = 55) {
+  FF(speed, 'a');
+  ToCenterC();
+}
+
+void f_(double speed = 55) {
+  FF(speed, 'a');
+  ToCenter();
+}
+
+void B_(double speed = 55) {
+  BB(speed, 'a');
+  BackCenterC();
+}
+
+void b_(double speed = 55) {
+  BB(speed, 'a');
+  BackCenter();
+}
+
+void R_(double angle = 0) {
+  if (angle == 0) {
+    SpinR();
+  }
+  spin('R', angle);
+  //delay(50);
+}
+
+void L_(double angle = 0) {
+  if (angle == 0) {
+    SpinL();
+  }
+  spin('L', angle);
+  //delay(50);
+}
+
+void FS_(double speed = 30) {
+  FF(speed, 's');
+}
+
+void BS_(double speed = 30) {
+  BB(speed, 's');
+}
+
+void _S() {
+  MotorStop();
+}
+
+void S_() {
+  MotorStop();
+}
+
+void FE_(double Speed = 30) {
+  while (1) {
+    PIDF(Speed, PID_KP, PID_KD);
+    ReadCalibrateF();
+    if ((F[2] < Ref && F[5] < Ref && F[3] < Ref && F[4] < Ref)) {
+      break;
+    }
+  }
+  MotorStop();
+}
+
+void BE_(double Speed = 30) {
+  while (1) {
+    PIDB(Speed, PID_KP, PID_KD);
+    ReadCalibrateB();
+    if ((F[2] < Ref && F[5] < Ref && F[3] < Ref && F[4] < Ref)) {
+      break;
+    }
+  }
+  MotorStop();
+}
+
+void _F(int Distance) {
+  movement(Distance * 0.01);
+}
+
+void _B(int Distance) {
+  movement(-Distance * 0.01);
+}
+
+
+void _R(int angle = 90) {
+  spin('R', angle);
+}
+
+void _L(int angle = 90) {
+  spin('L', angle);
+}
+
+void _FR(double distance = 1) {
+  movement(distance);
+  spin('R', 90);
+  movement(distance);
+}
+
+void _FL(double distance = 10) {
+  movement(distance);
+  spin('L', 90);
+  movement(distance);
+}
+
+void _BR(double distance = 10) {
+  movement(-distance);
+  spin('L', 90);
+  movement(-distance);
+}
+
+void _BL(double distance = 10) {
+  movement(-distance);
+  spin('R', 90);
+  movement(-distance);
+}
+
+void P() {
+  _B(10);
+  ServoOpen();
+  delay(100);
+  ServoDown();
+  delay(100);
+  _F(5);
+  delay(100);
+  _F(5);
+  ServoClose();
+  delay(100);
+  ServoUp();
+  delay(100);
+}
+
+void R() {
+  ServoDown();
+  delay(100);
+  ServoOpen();
+  delay(100);
+  ServoUp();
+  delay(100);
+  ServoClose();
+}
+
+
+
+
+//Fundamental Functions
+
+void movement (double distance) {
+  if (distance < 0) {
+    Move(-15*k, -15*k, -distance * 68.7);
+    MotorStop();
+    return;
+  }
+  Move(15*k, 15*k, distance * 68.7);
+  MotorStop();
+}
+
+void spin(char direction, double angle) {
+  if (direction == 'R') {
+  Move(30*k*21/20, -30*k*21/20, angle * 2.665);
+  MotorStop();
+  } else if (direction == 'L') {
+  Move(-30*k*21/20, 30*k*21/20, angle * 2.665);
+  MotorStop();
+  } else {
+    // do nothing 
+  }
+  MotorStop();
+}
+
+void go(double cm, double speed = 30) {
+  if (cm > 0) {
+    FFtimer(speed, cm * 656 / (speed));
+  }
+  else if (cm < 0) {
+    BBtimer(speed, -cm * 656 / (speed));
+  }
+  MotorStop();
+}
+
+
+
+//Pre-made Functions
+
+//Left S
+void LS() {
+  FFR(50, 'r');
+  FFL(50, 'l');
+}
+
+//Right S
+void RS() {
+  FFL(50, 'l'); 
+  FFR(50, 'r');
+  }
+
+//Left Hook
+void LH() {
+  FFR(55, 'R');
+  FFL(55, 'L');
+}
+
+//Right Hook
+void RH() {
+  FFL(55, 'L'); 
+  FFR(55, 'R');
+}
+
+//for small wave
+void wavesmall() {
+  FF(60,'p');
+  go(32);
+}
+
+void RBIG () {
+    FFL(60, 'l');
+    FFR(60, 'R');
+    FFL(60, 'l');
+}
+
+void LBIG () {
+    FFR(60, 'r');
+    FFL(60, 'L');
+    FFR(60, 'r');
+}
+
+//for zigzag, char is first turn
+void zigzag(char direction) {
+  if (direction == 'R') {
+  FFL(60, 'L');
+  FFR(50, 'R');
+  } else if (direction == 'L') {
+  FFR(60, 'R');
+  FFL(50, 'L');
+  } else {
+    // do nothing 
+  }
+}
