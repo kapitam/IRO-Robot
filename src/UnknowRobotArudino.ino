@@ -1,7 +1,7 @@
 #include <UnknowStormXIGathering2.h>
 // forward-declare functions defined in other .ino files
 
-void _R(int angle = 90);
+void _R(double angle = 90);
 
 float voltage() {
   float a = analogRead(A3);

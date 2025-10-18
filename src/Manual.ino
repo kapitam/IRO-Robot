@@ -97,6 +97,10 @@ void B_(double speed = 55) {
   BackCenterC();
 }
 
+void FP_(double speed = 55) {
+  FF(speed, 'p');
+}
+
 void b_(double speed = 55) {
   BB(speed, 'a');
   BackCenter();
@@ -156,20 +160,19 @@ void BE_(double Speed = 30) {
   MotorStop();
 }
 
-void _F(int Distance) {
+void _F(double Distance) {
   movement(Distance);
 }
 
-void _B(int Distance) {
+void _B(double Distance) {
   movement(-Distance);
 }
 
-
-void _R(int angle = 90) {
+void _R(double angle = 90) {
   spin('R', angle);
 }
 
-void _L(int angle = 90) {
+void _L(double angle = 90) {
   spin('L', angle);
 }
 
@@ -199,6 +202,15 @@ void _BL(double distance = 10) {
 
 void P() {
   _B(3.3);
+  ServoDown();
+  delay(50);
+  ServoClose();
+  delay(50);
+  ServoUp();
+  delay(50);
+}
+
+void P1() {
   ServoDown();
   delay(50);
   ServoClose();
@@ -244,7 +256,7 @@ void spin(char direction, double angle) {
   MotorStop();
 }
 
-void go(double cm, double speed = 30) {
+void go(double speed, double cm) {
   if (cm > 0) {
     FFtimer(speed, cm * 656 / (speed));
   }
@@ -254,7 +266,7 @@ void go(double cm, double speed = 30) {
   MotorStop();
 }
 
-void got(double distance, double speed = 40) {
+void got(double speed, double distance) {
   double target = speed - 15;
   double traveldistance = distance * 2.0 / 3.0 - 5;
 
@@ -270,9 +282,9 @@ void got(double distance, double speed = 40) {
   Move(speed*k, speed*k, (traveldistance/6) * 68.7 * (15.0 / speed));
 
   // ---- Deceleration phase (speed → 30) ----
-  double decTarget = speed - 30;
+  double decTarget = speed - 20;
   Move((speed - decTarget/2)*k, (speed - decTarget/2)*k, (traveldistance/6) * 68.7 * (15.0 / (speed - decTarget/2)));
-  Move(30*k, 30*k, (traveldistance/6) * 68.7 * (15.0 / 30.0));
+  Move(20*k, 20*k, (traveldistance/6) * 68.7 * (15.0 / 20.0));
 
   MotorStop();
 }
@@ -309,7 +321,7 @@ void RH() {
 //for small wave
 void wavesmall() {
   FF(60,'p');
-  go(32);
+  go(30, 32);
 }
 
 void RBIG () {
