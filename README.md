@@ -48,7 +48,7 @@ Program1();
 # 🗒 Notes
 
 My friend made some functions that _might or might not work_ (a lot don’t).  
-Just use the **original ones** if in doubt.
+Just use the **original ones IN MANUAL** if in doubt.
 
 **Original code folder:**  
 [Google Drive link](https://drive.google.com/drive/folders/11dK5WG5Os6kRYebBeMF-xZqnZoDwQryf)
